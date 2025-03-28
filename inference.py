@@ -109,7 +109,7 @@ class InferenceHandler:
 
     # TODO Force generate using subset of instrument instead of all.
 
-    def inference(self, audio_path, outpath=None, valid_programs=None, num_beams=1):
+    def inference(self, audio_path, output_path, valid_programs=None, num_beams=1):
         audio, _ = librosa.load(audio_path, sr=self.SAMPLE_RATE)
         if valid_programs is not None:
             invalid_programs = self._get_program_ids(valid_programs)
@@ -126,11 +126,7 @@ class InferenceHandler:
             result = self._postprocess_batch(result)
             results.append(result)
         event = self._to_event(results, frame_times)
-        if outpath is None:
-            filename = audio_path.split('/')[-1].split('.')[0]
-            outpath = f'./out/{filename}.mid'
-        os.makedirs('/'.join(outpath.split('/')[:-1]), exist_ok=True)
-        note_seq.sequence_proto_to_midi_file(event, outpath)
+        note_seq.sequence_proto_to_midi_file(event, output_path)
 
     def _postprocess_batch(self, result):
         after_eos = torch.cumsum(
