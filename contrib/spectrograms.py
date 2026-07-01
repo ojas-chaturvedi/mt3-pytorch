@@ -18,11 +18,13 @@ import dataclasses
 
 import tensorflow as tf
 
-# The spectrogram front end is cheap and runs on CPU; keep TensorFlow off the
-# GPU entirely so it never grabs device memory that PyTorch (which runs the
-# actual model) needs. Must happen before any GPU is initialized.
+# Run the spectrogram front end on the GPU (stock TensorFlow behavior), but with
+# memory growth enabled so TF only allocates what it needs and coexists with
+# PyTorch (which runs the actual model) instead of pre-grabbing all device
+# memory. Must happen before any GPU is initialized.
 try:
-    tf.config.set_visible_devices([], "GPU")
+    for _gpu in tf.config.list_physical_devices("GPU"):
+        tf.config.experimental.set_memory_growth(_gpu, True)
 except Exception:
     pass
 
