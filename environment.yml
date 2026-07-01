@@ -3,15 +3,20 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.7
+  - python=3.8
+  - ffmpeg
   - pip
+  - pytorch
   - protobuf==3.20.3
   - pip:
       - transformers==4.18.0
-      - torch
       - librosa==0.9.1
-      - ddsp==3.3.4
-      - t5==0.9.3
+      # ddsp and t5 were dropped: they only provided ddsp.spectral_ops.compute_logmel
+      # (now vendored into contrib/spectrograms.py using the same tf.signal ops) and
+      # t5.data.DEFAULT_EXTRA_IDS (a constant, inlined in contrib/vocabularies.py).
+      # They pulled in the jax/flax/t5x stack that made this env unsolvable.
+      # tensorflow is still needed for the tf.signal spectrogram front end.
+      - tensorflow==2.13.0
       - note-seq==0.0.3
       - pretty-midi==0.2.9
       - einops==0.4.1

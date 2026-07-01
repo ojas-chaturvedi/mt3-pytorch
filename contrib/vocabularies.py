@@ -21,7 +21,7 @@ from typing import Optional, Sequence
 from contrib import event_codec
 
 import note_seq
-import t5.data
+DEFAULT_EXTRA_IDS = 100  # inlined from t5.data.DEFAULT_EXTRA_IDS to drop the t5/jax dependency
 
 
 DECODED_EOS_ID = -1
@@ -103,7 +103,7 @@ def build_codec(vocab_config: VocabularyConfig):
 
 
 def vocabulary_from_codec(codec: event_codec.Codec):
-    return GenericTokenVocabulary(codec.num_classes, extra_ids=t5.data.DEFAULT_EXTRA_IDS)
+    return GenericTokenVocabulary(codec.num_classes, extra_ids=DEFAULT_EXTRA_IDS)
 
 
 class GenericTokenVocabulary():
